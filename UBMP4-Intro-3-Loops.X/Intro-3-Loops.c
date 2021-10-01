@@ -20,7 +20,6 @@
 
 // Program variable definitions
 unsigned char TonLED4 = 127;    // LED brightness PWM value
-unsigned char PWMperiod;        // PWM period counter for PWM loops
 unsigned int period = 460;      // Sound period value for later activities
 
 int main(void)
@@ -30,30 +29,22 @@ int main(void)
 	
     while(1)
 	{
-        // Decrease brightness
-        if(SW2 == 0)
-        {
-            TonLED4 -= 1;
-        }
-
-        // Increase brightness
-        if(SW3 == 0)
-        {
-            TonLED4 += 1;
+        if(TonLED4 < 255 && SW2 == 0) {
+            TonLED4++;
         }
         
-        // PWM LED4 brightness
-        PWMperiod = 255;
-        while(PWMperiod != 0)
-        {
-            if(TonLED4 == PWMperiod)
-            {
+        if(TonLED4 > 0 && SW3 == 0) {
+            TonLED4--;
+        }
+        
+        for(unsigned char PWMperiod = 255; PWMperiod != 0; PWMperiod --) {
+            if(TonLED4 == PWMperiod) {
                 LED4 = 1;
             }
-            PWMperiod --;
             __delay_us(20);
         }
         LED4 = 0;
+        
         
         // Activate bootloader if SW1 is pressed.
         if(SW1 == 0)
@@ -69,17 +60,25 @@ int main(void)
  *    is being evaluated within its brackets? (Hint: Think about the Boolean
  *    variables from Activity 2-Variables.) How many times will this loop run?
  * 
+ * it checks if 1 == true, which it is (because c). The compiler probably removes the check anyway so it just loops.
+ * 
  * 2. There is a second 'while(PWMperiod != 0)' loop inside the first while
  *    loop. What condition is being evaluated inside this while statement's
  *    brackets? How many times will the contents of this inner loop run?
  * 
+ * It is checking if PWMperiod is 0. It will run 255 times.
+ * 
  * 3. What condition is being evaluated by the if statement inside the loop?
  *    What happens when the if condition is true?
+ * 
+ * It checks if TonLED4 is equal to PWMperiod. If it is, LED4 is set to 1.
  * 
  * 4. Pressing the up or down buttons (SW3 and SW2) will increase or decrease
  *    the brightness of LED D4 using PWM (Pulse-Width Modulation). How many 
  *    different brightnesses can the LED have? What would the step size of one
  *    brightness level change be if it was expressed as a percentage?
+ * 
+ * TonLED4 can have 256 values. Each step would be ~0.3%
  * 
  * 5. The while loop needs three statements to perform its function. First, the
  *    assignment statement 'PWMperiod = 255;' sets the PWMperiod variable. Next,
@@ -91,6 +90,8 @@ int main(void)
  *    statement 'PWMperiod --;' modifies the variable from within the loop.
  *    When the condition is false, the loop terminates and the program continues
  *    running the code below the loop structure.
+ * 
+ * This looks like a good place for a for loop
  * 
  *    A 'for' loop is an alternative to a while loop, and incorporates the
  *    assignment of the loop variable, the loop conditional check, and variable
@@ -109,6 +110,8 @@ int main(void)
         LED4 = 0;
         
  *    What is an advantage of using a for loop instead of a while loop?
+ * 
+ * It looks cleaner and is less error prone to write.
  * 
  * 6. The 'for' loop, above, redefines the PWMperiod variable in the 
  *    initialization statement: 'for(unsigned char PWMperiod = 255; ...'
@@ -136,6 +139,8 @@ int main(void)
  *    Compile and run the code. When the program runs, the PWMperiod variable
  *    inside the for loop will count down from 255 to 0, and should be 0 when
  *    the loop finishes. Is LED D5 lit? What must the value of PWMperiod be?
+ * 
+ * LED5 is not lit. PWMperiod should be 0 and definitely not 128.
  * 
  * 7. Add this code below the PWM loop to generate a tone:
                 
@@ -167,8 +172,13 @@ int main(void)
  * 
  *    What variable type is period? How large a number can this variable hold?
  * 
+ * period is an int. That's 32bit!!!!! I think. It can hold up to 4294967296 different values.
+ * 
  * 8. Why is period copied to the local variable p inside the inner for loop?
  *    What would happen if the actual period variable was decremented instead?
+ * 
+ * Period should be copied
+ * If the real period value was decremented it would just go down really fast and not play anymore
  * 
  * Programming Activities
  * 
@@ -177,6 +187,8 @@ int main(void)
  *    holding SW2 will dim the LED until it is off and then keep if off, or
  *    pressing and holding SW3 will brighten the LED and keep it at maximum
  *    brightness.
+ * 
+ * 
  * 
  * 2. Modify your program to control the brightness of LED D5 using SW4 and SW5
  *    while using SW3 and SW2 to control LED D4. Hint: To ensure each LED can
@@ -195,4 +207,6 @@ int main(void)
  * 
  * 5. Make a 'chirp' or 'pew-pew' sound effect by sweeping through a range of
  *    frequencies when a button is pressed.
+ * 
+ * 
  */
