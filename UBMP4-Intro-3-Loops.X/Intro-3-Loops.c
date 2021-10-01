@@ -20,6 +20,7 @@
 
 // Program variable definitions
 unsigned char TonLED4 = 127;    // LED brightness PWM value
+unsigned char TonLED5 = 127;    // LED brightness PWM value
 unsigned int period = 460;      // Sound period value for later activities
 
 int main(void)
@@ -37,13 +38,25 @@ int main(void)
             TonLED4--;
         }
         
+        if(TonLED5 < 255 && SW4 == 0) {
+            TonLED5++;
+        }
+        
+        if(TonLED5 > 0 && SW5 == 0) {
+            TonLED5--;
+        }
+        
         for(unsigned char PWMperiod = 255; PWMperiod != 0; PWMperiod --) {
             if(TonLED4 == PWMperiod) {
                 LED4 = 1;
             }
+            if(TonLED5 == PWMperiod) {
+                LED5 = 1;
+            }
             __delay_us(20);
         }
         LED4 = 0;
+        LED5 = 0;
         
         
         // Activate bootloader if SW1 is pressed.
@@ -188,7 +201,7 @@ int main(void)
  *    pressing and holding SW3 will brighten the LED and keep it at maximum
  *    brightness.
  * 
- * 
+ * Complete
  * 
  * 2. Modify your program to control the brightness of LED D5 using SW4 and SW5
  *    while using SW3 and SW2 to control LED D4. Hint: To ensure each LED can
@@ -196,6 +209,8 @@ int main(void)
  *    PWM functions in the same loop. You can see the resulting PWM wave if you
  *    have access to an oscilloscope. If not, just light the other two LEDs and 
  *    compare the brightness of LEDs D4 and D5 to them.
+ * 
+ * Cool
  * 
  * 3. Rather than having lights suddenly turn on at full brightness, or motors
  *    turn on at full power, create a program that uses a for loop and your PWM
