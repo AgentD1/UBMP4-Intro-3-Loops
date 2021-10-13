@@ -19,44 +19,32 @@
 // TODO Set linker code offset to '800' under "Additional options" pull-down.
 
 // Program variable definitions
-unsigned char TonLED4 = 127;    // LED brightness PWM value
-unsigned char TonLED5 = 127;    // LED brightness PWM value
-unsigned int period = 460;      // Sound period value for later activities
+unsigned char tone;    // LED brightness PWM value
+bool going = false;
 
-int main(void)
-{
+int main(void) {
     OSC_config();               // Configure internal oscillator for 48 MHz
     UBMP4_config();             // Configure on-board UBMP4 I/O devices
 	
-    while(1)
-	{
-        if(TonLED4 < 255 && SW2 == 0) {
-            TonLED4++;
+    while(1) {
+        if(!going && SW2 == 0) {
+            going = true;
+            tone = 0;
         }
         
-        if(TonLED4 > 0 && SW3 == 0) {
-            TonLED4--;
-        }
-        
-        if(TonLED5 < 255 && SW4 == 0) {
-            TonLED5++;
-        }
-        
-        if(TonLED5 > 0 && SW5 == 0) {
-            TonLED5--;
-        }
-        
-        for(unsigned char PWMperiod = 255; PWMperiod != 0; PWMperiod --) {
-            if(TonLED4 == PWMperiod) {
-                LED4 = 1;
+        if(going) {
+            if(tone == 50) {
+                going = false;
+            } else {
+                tone++;
             }
-            if(TonLED5 == PWMperiod) {
-                LED5 = 1;
+            
+            for(unsigned char cycles = 50; cycles != 0; cycles--) {
+                BEEPER = !BEEPER;
+                for(unsigned int p = tone; p != 0; p--);
             }
-            __delay_us(20);
         }
-        LED4 = 0;
-        LED5 = 0;
+        
         
         
         // Activate bootloader if SW1 is pressed.
@@ -217,11 +205,16 @@ int main(void)
  *    code to make a 'soft-start' program that slowly increases the PWM on-time
  *    when you press a button. Can you make it turn off in a similar way?
  * 
+ * Cool
+ * 
  * 4. Make a program that creates an automated, electronic 'pulse', repeatedly
  *    brightening and dimming one or more LEDs.
+ * 
+ * Done cooly
  * 
  * 5. Make a 'chirp' or 'pew-pew' sound effect by sweeping through a range of
  *    frequencies when a button is pressed.
  * 
+ * Sounds... good...
  * 
  */
